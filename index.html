@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ============================================================= -->
+<!--  À PERSONNALISER : titre affiché en haut de la page          -->
+<!--  Modifie le <title> ci-dessous ET le <h1>/<p class=subtitle> -->
+<!--  plus bas dans le <header>.                                  -->
+<!-- ============================================================= -->
+<title>Chorale — Loïc & Lola</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23A31621'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #A31621;        /* rouge cardinal */
+    --accent-light: #D99AA0;
+    --accent-lighter: #EBCBCE;
+    --accent-lightest: #FBF3F3;
+    --accent-dark: #7C0F18;
+    --text: #2C2C2C;
+    --text-light: #6B6B6B;
+    --text-lighter: #9A9A9A;
+    --bg: #FCFAFA;
+    --white: #FFFFFF;
+    --divider: #EAE0E1;
+    --disabled: #C8C8C8;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Cormorant Garamond', Georgia, serif;
+    --voice: var(--accent);
+    --voice-light: var(--accent-light);
+    --voice-lightest: var(--accent-lightest);
+    --voice-shadow: rgba(163, 22, 33, 0.28);
+  }
+
+  body[data-voice="soprano"] {
+    --voice: #947A82;
+    --voice-light: #BEA4AC;
+    --voice-lightest: #F2ECED;
+    --voice-shadow: rgba(148, 122, 130, 0.3);
+  }
+  body[data-voice="alto"] {
+    --voice: #8E8668;
+    --voice-light: #B4AE90;
+    --voice-lightest: #F0EEE4;
+    --voice-shadow: rgba(142, 134, 104, 0.3);
+  }
+  body[data-voice="tenor"] {
+    --voice: #688E86;
+    --voice-light: #90B4AE;
+    --voice-lightest: #E4F0EE;
+    --voice-shadow: rgba(104, 142, 134, 0.3);
+  }
+  body[data-voice="basse"] {
+    --voice: #707C8E;
+    --voice-light: #98A4B4;
+    --voice-lightest: #E6EAF0;
+    --voice-shadow: rgba(112, 124, 142, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
+
+  /* ===== FULL HEADER (scrolls away) ===== */
+  .header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    background: var(--white);
+    border-bottom: 1px solid var(--divider);
+  }
+
+  @media (min-width: 768px) {
+    .header { padding: 20px 24px 16px; }
+  }
+
+  .header h1 {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .header h1 { font-size: 2.2rem; margin-bottom: 4px; }
+  }
+
+  .header .subtitle {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .header .subtitle { margin-bottom: 12px; }
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .header-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
+    border: 1.5px solid var(--accent-light);
+    color: var(--accent-dark);
+    background: var(--white);
+  }
+
+  .header-btn:hover { background: var(--accent-lightest); border-color: var(--accent); }
+
+  /* ===== COMPACT HEADER (slides in when scrolled) ===== */
+  .header-compact {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    background: var(--white);
+    border-bottom: 1px solid var(--divider);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .header-compact.visible { transform: translateY(0); }
+
+  .header-compact h2 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .compact-actions { display: flex; gap: 8px; }
+
+  .compact-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent-light);
+    background: var(--white);
+    color: var(--accent-dark);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: background 0.25s, border-color 0.25s;
+  }
+
+  .compact-btn:hover { background: var(--accent-lightest); border-color: var(--accent); }
+  .compact-btn svg { width: 16px; height: 16px; }
+  .header-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* ===== INFO BANNER ===== */
+  .banner {
+    max-width: 640px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+  }
+  .banner-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent-lightest);
+    border: 1px solid var(--accent-lighter);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--accent-dark);
+    line-height: 1.4;
+  }
+  .banner-inner svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); }
+
+  /* ===== VOICE SELECTOR ===== */
+  .voice-selector {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+
+  .voice-selector > label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .voice-options { display: flex; gap: 10px; justify-content: center; background: none; }
+  .voice-options input[type="radio"] { display: none; }
+
+  .voice-options .voice-opt {
+    flex: 0 1 auto;
+    min-width: 90px;
+    text-align: center;
+    padding: 10px 24px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s;
+    border: 1.5px solid var(--accent-light);
+    border-radius: 24px;
+    user-select: none;
+    background: var(--white);
+  }
+
+  .voice-options .voice-opt:hover { background: var(--accent-lightest); border-color: var(--accent); }
+
+  .voice-options input[type="radio"]:checked + .voice-opt {
+    background: var(--voice);
+    color: var(--white);
+    border-color: var(--voice);
+    box-shadow: 0 2px 8px var(--voice-shadow);
+    transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
+  }
+
+  .action-btn.solo:not(.disabled) {
+    color: var(--voice);
+    border-color: var(--voice-light);
+    transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  }
+  .action-btn.solo:not(.disabled):hover { background: var(--voice-lightest); border-color: var(--voice); }
+  .action-btn.solo.playing {
+    background: var(--voice);
+    border-color: var(--voice);
+    color: var(--white);
+    box-shadow: 0 2px 8px var(--voice-shadow);
+  }
+
+  /* ===== SONG LIST ===== */
+  .song-list { max-width: 640px; margin: 28px auto 0; padding: 0 24px; }
+
+  .song-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--divider);
+    background: var(--white);
+    transition: background 0.2s;
+  }
+
+  .song-item:first-child { border-radius: 16px 16px 0 0; }
+  .song-item:last-child { border-bottom: none; border-radius: 0 0 16px 16px; }
+  .song-item:only-child { border-radius: 16px; }
+
+  .song-info { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; }
+
+  .song-number {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-light);
+    min-width: 20px;
+  }
+
+  .song-text { flex: 1; min-width: 0; }
+
+  .song-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .song-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .song-actions { display: flex; gap: 6px; flex-shrink: 0; margin-left: 16px; }
+
+  .action-btn {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    border: 1.5px solid var(--accent-light);
+    background: var(--white);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s, border-color 0.25s, color 0.25s, box-shadow 0.25s;
+    color: var(--accent);
+    position: relative;
+  }
+
+  .action-btn:hover:not(.disabled) { background: var(--accent-lightest); border-color: var(--accent); }
+
+  .action-btn.disabled {
+    border-color: var(--divider);
+    color: var(--disabled);
+    cursor: default;
+    pointer-events: none;
+    background: var(--bg);
+  }
+
+  .action-btn svg { width: 18px; height: 18px; }
+
+  .action-btn.playing {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+    box-shadow: 0 2px 8px var(--voice-shadow);
+  }
+
+  /* Tooltip */
+  .action-btn[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ===== AUDIO PLAYER ===== */
+  .audio-player {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 1.5px solid var(--divider);
+    padding: 14px 24px;
+    display: none;
+    align-items: center;
+    gap: 14px;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  }
+  .audio-player.visible { display: flex; }
+
+  .player-info { flex: 1; min-width: 0; }
+  .player-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .player-voice { font-size: 0.75rem; color: var(--text-light); }
+
+  .player-controls { display: flex; align-items: center; gap: 8px; }
+
+  .player-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .player-btn.play-pause { background: var(--accent); color: var(--white); }
+  .player-btn.play-pause:hover { background: var(--accent-dark); }
+  .player-btn.loop { background: transparent; color: var(--disabled); width: 30px; height: 30px; }
+  .player-btn.loop svg { width: 15px; height: 15px; }
+  .player-btn.loop:hover { color: var(--accent); }
+  .player-btn.loop.active { color: var(--accent); background: var(--accent-lightest); border-radius: 50%; }
+  .player-btn.close { background: transparent; color: var(--text-light); border-radius: 50%; }
+  .player-btn.close:hover { background: var(--accent-lightest); color: var(--text); }
+  .player-btn svg { width: 18px; height: 18px; }
+
+  .player-progress-wrap { flex: 2; display: flex; align-items: center; gap: 8px; }
+  .player-time { font-size: 0.72rem; color: var(--text-light); min-width: 36px; text-align: center; }
+  .player-progress { flex: 1; height: 4px; background: var(--accent-lighter); border-radius: 4px; cursor: pointer; position: relative; }
+  .player-progress-bar { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width 0.1s linear; }
+
+  /* ===== TWO-COLUMN LAYOUT (desktop only) ===== */
+  .main-layout { display: block; }
+  .sheet-panel { display: none; }
+
+  @media (min-width: 901px) {
+    body { height: 100dvh; overflow: hidden; display: flex; flex-direction: column; padding-bottom: 0; }
+    .header { display: flex; align-items: baseline; padding: 10px 24px; text-align: left; gap: 12px; }
+    .header h1 { font-size: 1.4rem; margin-bottom: 0; white-space: nowrap; }
+    .header .subtitle { margin-bottom: 0; font-size: 0.95rem; white-space: nowrap; }
+    .header-actions { margin-left: auto; align-items: center; gap: 8px; flex-wrap: nowrap; }
+    .header-btn { padding: 6px 14px; font-size: 0.9rem; }
+    .header-compact { display: none !important; }
+    .banner { max-width: none; margin-top: 12px; }
+    .main-layout { display: flex; flex: 1; min-height: 0; }
+    .main-left { flex: 0 0 50%; max-width: 50%; overflow-y: auto; padding-bottom: 80px; }
+    .voice-selector { max-width: none; display: flex; align-items: center; gap: 12px; padding: 12px 24px; }
+    .voice-selector > label { margin-bottom: 0; white-space: nowrap; font-size: 0.95rem; }
+    .voice-options .voice-opt { padding: 6px 14px; font-size: 0.9rem; min-width: auto; }
+    .song-list { max-width: none; padding: 0 24px; }
+    .sheet-panel {
+      display: flex; flex-direction: column;
+      flex: 0 0 50%; max-width: 50%; min-height: 0;
+      border-left: 1px solid var(--divider);
+      background: var(--white);
+    }
+    .sheet-panel-header {
+      display: none; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 1px solid var(--divider); flex-shrink: 0;
+    }
+    .sheet-panel-header.visible { display: flex; }
+    .sheet-panel-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 600; color: var(--text);
+      flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 12px;
+    }
+    .sheet-panel-actions { display: none; gap: 8px; flex-shrink: 0; }
+    .sheet-panel-actions.visible { display: flex; }
+    .sheet-panel-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid var(--accent-light); background: var(--white); color: var(--accent-dark);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .sheet-panel-btn:hover { background: var(--accent-lightest); border-color: var(--accent); }
+    .sheet-panel-btn svg { width: 16px; height: 16px; }
+    .sheet-panel-body { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+    .sheet-panel-body iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .sheet-panel-empty {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--text-lighter); gap: 12px;
+    }
+    .sheet-panel-empty svg { width: 48px; height: 48px; color: var(--accent-lighter); }
+    .sheet-panel-empty span { font-family: var(--font-display); font-size: 1.1rem; font-style: italic; }
+    .audio-player { left: 0; right: 0; z-index: 100; }
+  }
+
+  /* ===== ICON LEGEND (mobile only) ===== */
+  .icon-legend { display: flex; justify-content: center; gap: 20px; padding: 14px 16px 0; max-width: 640px; margin: 0 auto; }
+  .icon-legend-item { display: flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 0.82rem; color: var(--text-light); }
+  .icon-legend-item svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+  @media (min-width: 901px) { .icon-legend { display: none; } }
+
+  /* Mobile adjustments */
+  @media (max-width: 600px) {
+    .header { padding: 36px 20px 24px; }
+    .header h1 { font-size: 2.2rem; }
+    .header-actions { flex-direction: column; align-items: center; }
+    .header-compact { padding: 8px 16px; }
+    .header-compact h2 { font-size: 1.1rem; }
+    .voice-selector { padding: 24px 16px 0; }
+    .voice-options { gap: 8px; flex-wrap: wrap; }
+    .voice-options .voice-opt { font-size: 0.9rem; padding: 9px 18px; min-width: 80px; }
+    .song-list { padding: 0 16px; }
+    .song-item { padding: 14px 16px; }
+    .song-title { font-size: 1.05rem; }
+    .song-actions { gap: 5px; margin-left: 10px; }
+    .action-btn { width: 36px; height: 36px; }
+    .action-btn svg { width: 16px; height: 16px; }
+    .player-progress-wrap { display: none; }
+    .audio-player { padding: 12px 16px; }
+    .banner { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <!-- À PERSONNALISER : nom de la chorale / des mariés -->
+  <h1>Partitions &amp; Enregistrements</h1>
+  <p class="subtitle">Mariage de Loïc &amp; Lola · 19 septembre · Tréguier</p>
+  <div class="header-actions">
+    <a href="partitions/00-toutes-les-partitions.pdf" class="header-btn" target="_blank" title="Télécharger toutes les partitions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+      Toutes les partitions
+    </a>
+    <!-- Pour ajouter Spotify / YouTube plus tard, décommente et mets tes liens :
+    <a href="https://open.spotify.com/playlist/XXXX" class="header-btn" target="_blank" rel="noopener">Spotify</a>
+    <a href="https://youtube.com/playlist?list=XXXX" class="header-btn" target="_blank" rel="noopener">YouTube</a>
+    -->
+  </div>
+</header>
+
+<!-- Compact header (slides in on scroll, mobile) -->
+<div class="header-compact" id="headerCompact">
+  <h2>Partitions &amp; Enregistrements</h2>
+  <div class="compact-actions">
+    <a href="partitions/00-toutes-les-partitions.pdf" class="compact-btn" target="_blank" title="Toutes les partitions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="banner" id="audioBanner">
+  <div class="banner-inner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <span>Les enregistrements audio (par voix et ensemble) seront ajoutés prochainement. Pour l'instant, vous pouvez consulter les partitions.</span>
+  </div>
+</div>
+
+<div class="main-layout">
+  <div class="main-left">
+    <section class="voice-selector">
+      <label for="voice"><svg style="width:20px;height:20px;flex-shrink:0;color:var(--accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>Sélectionnez votre voix</label>
+      <div class="voice-options">
+        <input type="radio" name="voice" id="voice-soprano" value="soprano">
+        <label class="voice-opt" for="voice-soprano">Soprane</label>
+        <input type="radio" name="voice" id="voice-alto" value="alto">
+        <label class="voice-opt" for="voice-alto">Alto</label>
+        <input type="radio" name="voice" id="voice-tenor" value="tenor">
+        <label class="voice-opt" for="voice-tenor">Ténor</label>
+        <input type="radio" name="voice" id="voice-basse" value="basse">
+        <label class="voice-opt" for="voice-basse">Basse</label>
+      </div>
+    </section>
+
+    <div class="icon-legend">
+      <span class="icon-legend-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Partition
+      </span>
+      <span class="icon-legend-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+        Ma voix
+      </span>
+      <span class="icon-legend-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Ensemble
+      </span>
+    </div>
+
+    <div class="song-list" id="songList"></div>
+  </div>
+
+  <div class="sheet-panel" id="sheetPanel">
+    <div class="sheet-panel-header">
+      <span class="sheet-panel-title" id="sheetTitle">Partition</span>
+      <div class="sheet-panel-actions">
+        <button class="sheet-panel-btn" id="sheetNewTab" aria-label="Ouvrir dans un nouvel onglet" title="Nouvel onglet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+        <button class="sheet-panel-btn" id="sheetClose" aria-label="Fermer la partition" title="Fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-panel-body" id="sheetBody">
+      <div class="sheet-panel-empty" id="sheetEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.65 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v10.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M8 20v-7l3 1.474"/><circle cx="6" cy="20" r="2"/></svg>
+        <span>Sélectionnez un morceau pour afficher sa partition</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky audio player -->
+<div class="audio-player" id="audioPlayer">
+  <div class="player-info">
+    <div class="player-title" id="playerTitle">—</div>
+    <div class="player-voice" id="playerVoice"></div>
+  </div>
+  <div class="player-progress-wrap">
+    <span class="player-time" id="playerTimeCurrent">0:00</span>
+    <div class="player-progress" id="playerProgress">
+      <div class="player-progress-bar" id="playerProgressBar"></div>
+    </div>
+    <span class="player-time" id="playerTimeTotal">0:00</span>
+  </div>
+  <div class="player-controls">
+    <button class="player-btn loop" id="playerLoop" aria-label="Boucle" title="Lecture en boucle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></svg>
+    </button>
+    <button class="player-btn play-pause" id="playerPlayPause" aria-label="Lecture / Pause">
+      <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+      <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+    </button>
+    <button class="player-btn close" id="playerClose" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+</div>
+
+<audio id="audioEl" preload="none"></audio>
+
+<script>
+/* =================================================================
+   LISTE DES CHANTS
+   -----------------------------------------------------------------
+   Pour ajouter un enregistrement, remplace "" par le chemin du MP3,
+   par exemple : soprano: "audio/02-cantate-domino-soprano.mp3"
+   Dépose les fichiers MP3 dans le dossier "audio/".
+   "tous" = enregistrement de l'ensemble (toutes les voix).
+   ================================================================= */
+const songs = [
+  { id: 1,  title: "Veni Creator Spiritus", subtitle: "Invocation à l'Esprit Saint (grégorien)",
+    sheetMusic: "partitions/01-veni-creator.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/01-veni-creator-tous.mp3" } },
+
+  { id: 2,  title: "Cantate Domino", subtitle: "G. Pitoni — Psaume 149",
+    sheetMusic: "partitions/02-cantate-domino.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/02-cantate-domino-tous.mp3" } },
+
+  { id: 3,  title: "Introït « Deus Israel »", subtitle: "Entrée (grégorien)",
+    sheetMusic: "partitions/03-introit-deus-israel.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/03-introit-deus-israel-tous.mp3" } },
+
+  { id: 4,  title: "Kyrie VIII « De Angelis »", subtitle: "Ordinaire (grégorien)",
+    sheetMusic: "partitions/04-kyrie-de-angelis.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/04-kyrie-de-angelis-tous.mp3" } },
+
+  { id: 5,  title: "Gloria VIII « De Angelis »", subtitle: "Ordinaire (grégorien)",
+    sheetMusic: "partitions/05-gloria-de-angelis.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/05-gloria-de-angelis-tous.mp3" } },
+
+  { id: 6,  title: "Da pacem, Domine", subtitle: "Marcel Pérès",
+    sheetMusic: "partitions/06-da-pacem-domine.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/06-da-pacem-domine-tous.mp3" } },
+
+  { id: 7,  title: "Sanctus", subtitle: "Missa pro Europa — J. Berthier",
+    sheetMusic: "partitions/07-sanctus.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/07-sanctus-tous.mp3" } },
+
+  { id: 8,  title: "Agnus Dei", subtitle: "Missa pro Europa — J. Berthier",
+    sheetMusic: "partitions/08-agnus-dei.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "" } },
+
+  { id: 9,  title: "Ave Verum Corpus", subtitle: "W. A. Mozart — K. 618",
+    sheetMusic: "partitions/09-ave-verum-corpus.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/09-ave-verum-corpus-tous.mp3" } },
+
+  { id: 10, title: "Vous êtes dans mon âme", subtitle: "Jeanne Barbey",
+    sheetMusic: "partitions/10-vous-etes-dans-mon-ame.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/10-vous-etes-dans-mon-ame-tous.mp3" } },
+
+  { id: 11, title: "Cantique de Jean Racine", subtitle: "Gabriel Fauré — Op. 11",
+    sheetMusic: "partitions/11-cantique-jean-racine.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/11-cantique-jean-racine-tous.mp3" } },
+
+  { id: 12, title: "Salve Regina", subtitle: "Antienne à la Vierge (grégorien)",
+    sheetMusic: "partitions/12-salve-regina.pdf",
+    audio: { soprano: "", alto: "", tenor: "", basse: "", tous: "audio/12-salve-regina-tous.mp3" } },
+];
+
+// ===== SVG ICONS =====
+const icons = {
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  noteSolo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>',
+  noteMulti: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+};
+
+// ===== STATE =====
+let selectedVoice = null;
+let currentSongId = null;
+let currentType = null; // 'solo' or 'tous'
+let loopEnabled = false;
+
+const audioEl = document.getElementById('audioEl');
+const playerEl = document.getElementById('audioPlayer');
+const playerTitle = document.getElementById('playerTitle');
+const playerVoice = document.getElementById('playerVoice');
+const playerPlayPause = document.getElementById('playerPlayPause');
+const iconPlay = document.getElementById('iconPlay');
+const iconPause = document.getElementById('iconPause');
+const playerProgress = document.getElementById('playerProgress');
+const playerProgressBar = document.getElementById('playerProgressBar');
+const playerTimeCurrent = document.getElementById('playerTimeCurrent');
+const playerTimeTotal = document.getElementById('playerTimeTotal');
+const playerClose = document.getElementById('playerClose');
+
+// Hide the "audio coming soon" banner as soon as at least one recording exists
+if (songs.some(s => Object.values(s.audio).some(Boolean))) {
+  const b = document.getElementById('audioBanner');
+  if (b) b.remove();
+}
+
+// ===== RENDER SONG LIST =====
+function renderSongs() {
+  const list = document.getElementById('songList');
+  list.innerHTML = songs.map((song, idx) => {
+    const hasSheet = !!song.sheetMusic;
+    const hasSolo = selectedVoice && !!song.audio[selectedVoice];
+    const hasTous = !!song.audio.tous;
+    const soloDisabled = !selectedVoice || !hasSolo;
+    const tousDisabled = !hasTous;
+
+    const soloTooltip = !selectedVoice ? 'Sélectionnez votre voix'
+      : (!hasSolo ? 'Enregistrement à venir' : 'Écouter ma voix');
+    const tousTooltip = !hasTous ? 'Enregistrement à venir' : "Écouter l'ensemble";
+
+    const isSoloPlaying = currentSongId === song.id && currentType === 'solo';
+    const isTousPlaying = currentSongId === song.id && currentType === 'tous';
+
+    return `<div class="song-item">
+      <div class="song-info">
+        <span class="song-number">${idx + 1}.</span>
+        <div class="song-text">
+          <div class="song-title">${song.title}</div>
+          ${song.subtitle ? `<div class="song-subtitle">${song.subtitle}</div>` : ''}
+        </div>
+      </div>
+      <div class="song-actions">
+        <button class="action-btn${hasSheet ? '' : ' disabled'}" data-tooltip="Partition" ${hasSheet ? `onclick="openSheet(${song.id})"` : ''}>
+          ${icons.eye}
+        </button>
+        <button class="action-btn${soloDisabled ? ' disabled' : ' solo'}${isSoloPlaying ? ' playing' : ''}" data-tooltip="${soloTooltip}" ${!soloDisabled ? `onclick="playSolo(${song.id})"` : ''}>
+          ${icons.noteSolo}
+        </button>
+        <button class="action-btn${tousDisabled ? ' disabled' : ''}${isTousPlaying ? ' playing' : ''}" data-tooltip="${tousTooltip}" ${tousDisabled ? '' : `onclick="playTous(${song.id})"`}>
+          ${icons.noteMulti}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== VOICE SELECTION =====
+document.querySelectorAll('input[name="voice"]').forEach(radio => {
+  radio.addEventListener('change', e => {
+    selectedVoice = e.target.value;
+    document.body.dataset.voice = selectedVoice;
+    renderSongs();
+  });
+});
+
+// ===== PLAYBACK =====
+function playSolo(songId) {
+  const song = songs.find(s => s.id === songId);
+  if (!song || !selectedVoice || !song.audio[selectedVoice]) return;
+  startPlayback(song, selectedVoice, 'solo');
+}
+
+function playTous(songId) {
+  const song = songs.find(s => s.id === songId);
+  if (!song || !song.audio.tous) return;
+  startPlayback(song, 'tous', 'tous');
+}
+
+function startPlayback(song, voiceKey, type) {
+  currentSongId = song.id;
+  currentType = type;
+  audioEl.src = song.audio[voiceKey];
+  audioEl.play();
+  playerTitle.textContent = song.title;
+  const voiceLabels = { soprano: 'Soprane', alto: 'Alto', tenor: 'Ténor', basse: 'Basse', tous: 'Toutes les voix' };
+  playerVoice.textContent = voiceLabels[voiceKey] || '';
+  playerEl.classList.add('visible');
+  updatePlayPauseIcon(true);
+  renderSongs();
+  if (isDesktopLayout() && song.sheetMusic) openSheet(song.id);
+}
+
+// ===== SHEET MUSIC PANEL (desktop) =====
+const sheetTitle = document.getElementById('sheetTitle');
+const sheetBody = document.getElementById('sheetBody');
+const sheetEmpty = document.getElementById('sheetEmpty');
+const sheetCloseBtn = document.getElementById('sheetClose');
+const sheetNewTabBtn = document.getElementById('sheetNewTab');
+const sheetActions = document.querySelector('.sheet-panel-actions');
+const sheetHeader = document.querySelector('.sheet-panel-header');
+let currentSheetUrl = null;
+
+function isDesktopLayout() { return window.matchMedia('(min-width: 901px)').matches; }
+
+function openSheet(songId) {
+  const song = songs.find(s => s.id === songId);
+  if (!song || !song.sheetMusic) return;
+
+  if (currentSongId !== null && currentSongId !== songId) {
+    audioEl.pause(); audioEl.src = '';
+    playerEl.classList.remove('visible');
+    currentSongId = null; currentType = null;
+    renderSongs();
+  }
+
+  if (!isDesktopLayout()) { window.open(song.sheetMusic, '_blank'); return; }
+
+  currentSheetUrl = song.sheetMusic;
+  sheetTitle.textContent = song.title;
+  sheetEmpty.style.display = 'none';
+  sheetHeader.classList.add('visible');
+  sheetActions.classList.add('visible');
+  const oldIframe = sheetBody.querySelector('iframe');
+  if (oldIframe) oldIframe.remove();
+  const iframe = document.createElement('iframe');
+  iframe.src = song.sheetMusic;
+  sheetBody.appendChild(iframe);
+}
+
+sheetCloseBtn.addEventListener('click', () => {
+  const iframe = sheetBody.querySelector('iframe');
+  if (iframe) iframe.remove();
+  sheetEmpty.style.display = '';
+  sheetTitle.textContent = 'Partition';
+  sheetHeader.classList.remove('visible');
+  sheetActions.classList.remove('visible');
+  currentSheetUrl = null;
+});
+
+sheetNewTabBtn.addEventListener('click', () => { if (currentSheetUrl) window.open(currentSheetUrl, '_blank'); });
+
+// ===== PLAYER CONTROLS =====
+playerPlayPause.addEventListener('click', () => {
+  if (audioEl.paused) { audioEl.play(); updatePlayPauseIcon(true); }
+  else { audioEl.pause(); updatePlayPauseIcon(false); }
+});
+
+playerClose.addEventListener('click', () => {
+  audioEl.pause(); audioEl.src = '';
+  playerEl.classList.remove('visible');
+  currentSongId = null; currentType = null;
+  renderSongs();
+});
+
+function updatePlayPauseIcon(playing) {
+  iconPlay.style.display = playing ? 'none' : 'block';
+  iconPause.style.display = playing ? 'block' : 'none';
+}
+
+audioEl.addEventListener('timeupdate', () => {
+  if (audioEl.duration) {
+    const pct = (audioEl.currentTime / audioEl.duration) * 100;
+    playerProgressBar.style.width = pct + '%';
+    playerTimeCurrent.textContent = formatTime(audioEl.currentTime);
+    playerTimeTotal.textContent = formatTime(audioEl.duration);
+  }
+});
+
+audioEl.addEventListener('ended', () => {
+  if (loopEnabled) { audioEl.currentTime = 0; audioEl.play(); return; }
+  updatePlayPauseIcon(false);
+  currentSongId = null; currentType = null;
+  renderSongs();
+});
+
+const playerLoop = document.getElementById('playerLoop');
+playerLoop.addEventListener('click', () => {
+  loopEnabled = !loopEnabled;
+  playerLoop.classList.toggle('active', loopEnabled);
+});
+
+audioEl.addEventListener('pause', () => updatePlayPauseIcon(false));
+audioEl.addEventListener('play', () => updatePlayPauseIcon(true));
+
+playerProgress.addEventListener('click', e => {
+  if (!audioEl.duration) return;
+  const rect = playerProgress.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  audioEl.currentTime = pct * audioEl.duration;
+});
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+// ===== COMPACT HEADER (mobile only) =====
+const headerEl = document.querySelector('.header');
+const compactEl = document.getElementById('headerCompact');
+window.addEventListener('scroll', () => {
+  const show = window.scrollY > headerEl.offsetHeight - 60;
+  compactEl.classList.toggle('visible', show);
+}, { passive: true });
+
+// ===== INIT =====
+renderSongs();
+</script>
+
+</body>
+</html>

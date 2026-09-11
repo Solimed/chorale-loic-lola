@@ -65,7 +65,6 @@ et un bandeau indique « enregistrements à venir ».
 | 8 | Agnus Dei | `08-agnus-dei-<voix>.mp3` |
 | 9 | Ave Verum Corpus | `09-ave-verum-corpus-<voix>.mp3` |
 | 10 | Vous êtes dans mon âme | `10-vous-etes-dans-mon-ame-<voix>.mp3` |
-| 11 | Cantique de Jean Racine | `11-cantique-jean-racine-<voix>.mp3` |
 | 12 | Salve Regina | `12-salve-regina-<voix>.mp3` |
 
 `<voix>` = `soprano`, `alto`, `tenor`, `basse` ou `tous`.
